@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 7.1.0.final using JasperReports Library version 6.4.3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="RecoveryReport_NoBreakdown_TOPIC" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2f40bd4f-8da6-481c-bf25-00e7dbb04ee7">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="NT2x_QA1"/>
+	<parameter name="ItemType" class="java.util.List"/>
+	<parameter name="AssignedStation" class="java.util.List"/>
+	<parameter name="sdate" class="net.sf.jasperreports.types.date.DateRange">
+		<defaultValueExpression><![CDATA[DATERANGE("DAY")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="edate" class="net.sf.jasperreports.types.date.DateRange">
+		<defaultValueExpression><![CDATA[DATERANGE("DAY")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="closesdate" class="java.lang.String"/>
+	<parameter name="closeedate" class="net.sf.jasperreports.types.date.DateRange"/>
+	<parameter name="CompanyID" class="java.util.List"/>
+	<queryString language="SQL">
+		<![CDATA[select s1.stationcode as ascode, 
+       incident.incident_ID,
+	   incident.createdate,
+	   incident.close_date
+from Incident incident, station s1
+where incident.status_ID in (12,13) and s1.station_ID = incident.stationassigned_ID
+and $X{IN, incident.itemtype_id,ItemType}
+and $X{IN, s1.stationcode,AssignedStation}
+and $X{BETWEEN, incident.createdate, sdate,edate}
+and $X{BETWEEN, incident.close_date, closesdate,closeedate}
+and $X{IN, s1.companycode_ID,CompanyID}]]>
+	</queryString>
+	<field name="ascode" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="ascode"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="incident_ID" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="incident_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="incident"/>
+	</field>
+	<field name="createdate" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="createdate"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="incident"/>
+	</field>
+	<field name="close_date" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="close_date"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="incident"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="60" y="0" width="100" height="30" uuid="190ca6f9-d240-4bf7-942e-fd483a854ca3">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f47b4d3d-084e-4545-8213-fb3d76ca7c51"/>
+				</reportElement>
+				<text><![CDATA[incident_ID]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch">
+			<textField>
+				<reportElement x="60" y="18" width="100" height="30" uuid="1c558274-e012-4f73-aaba-62189ab1a9cc">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="f47b4d3d-084e-4545-8213-fb3d76ca7c51"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{incident_ID}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

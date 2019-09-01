@@ -1,0 +1,651 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 7.1.0.final using JasperReports Library version 6.4.3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="PAWOBReport_TOPIC" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3142d04b-2291-4106-81b0-e871bb0029e5">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="NT_QA1_JetBlue"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="293"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="698"/>
+	<parameter name="sdate" class="net.sf.jasperreports.types.date.DateRange">
+		<defaultValueExpression><![CDATA[DATERANGE("DAY")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="edate" class="net.sf.jasperreports.types.date.DateRange">
+		<defaultValueExpression><![CDATA[DATERANGE("DAY")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="FinalSegmentSDateTime" class="net.sf.jasperreports.types.date.DateRange">
+		<defaultValueExpression><![CDATA[DATERANGE("DAY")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="FinalSegmentEDateTime" class="net.sf.jasperreports.types.date.DateRange">
+		<defaultValueExpression><![CDATA[DATERANGE("DAY")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CreatedStation" class="java.util.List"/>
+	<parameter name="AssignedStation" class="java.util.List"/>
+	<parameter name="ChargeStation" class="java.util.List"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT * FROM pawob_report pawob
+	LEFT JOIN STATION ST1 ON pawob.Assigned_Station = st1.stationcode
+    LEFT JOIN STATION st2 ON pawob.created_station = st2.stationcode
+    LEFT JOIN STATION st3 ON pawob.CHARGE_CITY = st3.stationcode
+where
+ $X{[BETWEEN], date(date_created), sdate,edate} and 
+ $X{IN, st2.station_id,CreatedStation} and
+ $X{IN, st3.station_id,ChargeStation} and  
+ $X{IN, st1.station_id,AssignedStation} and 
+ $X{[BETWEEN], date(finalSegmentDateTime), FinalSegmentSDateTime,FinalSegmentEDateTime}]]>
+	</queryString>
+	<field name="name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pawob_report"/>
+	</field>
+	<field name="incident_id" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="incident_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pawob_report"/>
+	</field>
+	<field name="pnr" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="pnr"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pawob_report"/>
+	</field>
+	<field name="date_created" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="date_created"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pawob_report"/>
+	</field>
+	<field name="origin" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="origin"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pawob_report"/>
+	</field>
+	<field name="flight_segment_1" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="flight_segment_1"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pawob_report"/>
+	</field>
+	<field name="flight_segment_2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="flight_segment_2"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pawob_report"/>
+	</field>
+	<field name="flight_segment_3" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="flight_segment_3"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pawob_report"/>
+	</field>
+	<field name="flight_segment_4" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="flight_segment_4"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pawob_report"/>
+	</field>
+	<field name="gateway_city" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="gateway_city"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pawob_report"/>
+	</field>
+	<field name="destination" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="destination"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pawob_report"/>
+	</field>
+	<field name="created_station" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="created_station"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pawob_report"/>
+	</field>
+	<field name="charge_city" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="charge_city"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pawob_report"/>
+	</field>
+	<field name="charge_code" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="charge_code"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pawob_report"/>
+	</field>
+	<field name="FinalSegmentDateTime" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="FinalSegmentDateTime"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pawob_report"/>
+	</field>
+	<field name="interline" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="interline"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pawob_report"/>
+	</field>
+	<field name="country" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="country"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pawob_report"/>
+	</field>
+	<field name="bag_tags" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="bag_tags"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pawob_report"/>
+	</field>
+	<field name="status" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="status"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pawob_report"/>
+	</field>
+	<field name="checkin_location" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="checkin_location"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pawob_report"/>
+	</field>
+	<field name="bag_colors" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="bag_colors"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pawob_report"/>
+	</field>
+	<field name="bag_types" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="bag_types"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pawob_report"/>
+	</field>
+	<field name="Assigned_Station" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Assigned_Station"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pawob_report"/>
+	</field>
+	<field name="claim_type" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="claim_type"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pawob_report"/>
+	</field>
+	<field name="associated_claim" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="associated_claim"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pawob_report"/>
+	</field>
+	<field name="station_entered_ohd" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="station_entered_ohd"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pawob_report"/>
+	</field>
+	<field name="comments" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="comments"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pawob_report"/>
+	</field>
+	<field name="email" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="email"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="pawob_report"/>
+	</field>
+	<field name="Station_ID" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="Station_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="stationcode" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="stationcode"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="companycode_ID" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="companycode_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="stationdesc" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="stationdesc"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="address1" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="address1"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="address2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="address2"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="city" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="city"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="state_ID" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="state_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="province" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="province"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="countrycode_ID" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="countrycode_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="zip" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="zip"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="lf_hold_for_pickup" class="java.lang.Boolean">
+		<property name="com.jaspersoft.studio.field.label" value="lf_hold_for_pickup"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="lf_ship_from_addr1" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="lf_ship_from_addr1"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="lf_ship_from_addr2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="lf_ship_from_addr2"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="lf_ship_from_city" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="lf_ship_from_city"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="lf_ship_from_state_ID" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="lf_ship_from_state_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="lf_ship_from_province" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="lf_ship_from_province"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="lf_ship_from_countrycode_ID" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="lf_ship_from_countrycode_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="lf_ship_from_zip" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="lf_ship_from_zip"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="lf_ship_from_phone" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="lf_ship_from_phone"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="phone" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="phone"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="airport_location" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="airport_location"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="operation_hours" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="operation_hours"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="associated_airport" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="associated_airport"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="station_region" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="station_region"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="station_region_mgr" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="station_region_mgr"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="goal" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="goal"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="active" class="java.lang.Boolean">
+		<property name="com.jaspersoft.studio.field.label" value="active"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="visible" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="visible"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="lz_id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="lz_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="lz_lf_id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="lz_lf_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="wt_stationcode" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="wt_stationcode"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="email_language" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="email_language"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="priority" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="priority"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="region_id" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="region_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="timezone" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="timezone"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="fault_station_visibility" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="fault_station_visibility"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="lockWithAssingnTo" class="java.lang.Boolean">
+		<property name="com.jaspersoft.studio.field.label" value="lockWithAssingnTo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="contactName" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="contactName"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="auto_load_unassigned" class="java.lang.Boolean">
+		<property name="com.jaspersoft.studio.field.label" value="auto_load_unassigned"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_69" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="Station_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_70" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="stationcode"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_71" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="companycode_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_72" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="stationdesc"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_73" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="address1"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_74" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="address2"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_75" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="city"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_76" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="state_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_77" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="province"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_78" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="countrycode_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_79" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="zip"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_80" class="java.lang.Boolean">
+		<property name="com.jaspersoft.studio.field.label" value="lf_hold_for_pickup"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_81" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="lf_ship_from_addr1"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_82" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="lf_ship_from_addr2"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_83" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="lf_ship_from_city"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_84" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="lf_ship_from_state_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_85" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="lf_ship_from_province"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_86" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="lf_ship_from_countrycode_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_87" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="lf_ship_from_zip"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_88" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="lf_ship_from_phone"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_89" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="phone"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_90" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="airport_location"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_91" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="operation_hours"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_92" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="associated_airport"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_93" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="station_region"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_94" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="station_region_mgr"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_95" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="goal"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_96" class="java.lang.Boolean">
+		<property name="com.jaspersoft.studio.field.label" value="active"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_97" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="visible"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_98" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="lz_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_99" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="lz_lf_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_100" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="wt_stationcode"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_101" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="email_language"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_102" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="priority"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_103" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="region_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_104" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="timezone"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_105" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="fault_station_visibility"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_106" class="java.lang.Boolean">
+		<property name="com.jaspersoft.studio.field.label" value="lockWithAssingnTo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_107" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="contactName"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_108" class="java.lang.Boolean">
+		<property name="com.jaspersoft.studio.field.label" value="auto_load_unassigned"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_109" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="Station_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_110" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="stationcode"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_111" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="companycode_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_112" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="stationdesc"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_113" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="address1"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_114" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="address2"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_115" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="city"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_116" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="state_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_117" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="province"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_118" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="countrycode_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_119" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="zip"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_120" class="java.lang.Boolean">
+		<property name="com.jaspersoft.studio.field.label" value="lf_hold_for_pickup"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_121" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="lf_ship_from_addr1"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_122" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="lf_ship_from_addr2"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_123" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="lf_ship_from_city"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_124" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="lf_ship_from_state_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_125" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="lf_ship_from_province"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_126" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="lf_ship_from_countrycode_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_127" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="lf_ship_from_zip"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_128" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="lf_ship_from_phone"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_129" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="phone"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_130" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="airport_location"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_131" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="operation_hours"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_132" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="associated_airport"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_133" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="station_region"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_134" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="station_region_mgr"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_135" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="goal"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_136" class="java.lang.Boolean">
+		<property name="com.jaspersoft.studio.field.label" value="active"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_137" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="visible"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_138" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="lz_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_139" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="lz_lf_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_140" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="wt_stationcode"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_141" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="email_language"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_142" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="priority"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_143" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="region_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_144" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="timezone"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_145" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="fault_station_visibility"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_146" class="java.lang.Boolean">
+		<property name="com.jaspersoft.studio.field.label" value="lockWithAssingnTo"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_147" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="contactName"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="COLUMN_148" class="java.lang.Boolean">
+		<property name="com.jaspersoft.studio.field.label" value="auto_load_unassigned"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 7.1.0.final using JasperReports Library version 6.4.3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="MBRsGroupBAssignedStationID_TOPIC" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="79a36033-d5d3-46b5-a5ee-886eefbe80b5">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="TESTING"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="113"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="877"/>
+	<parameter name="IncidentStatus" class="java.util.List"/>
+	<parameter name="ItemType" class="java.util.List"/>
+	<parameter name="CompanyID" class="java.util.List"/>
+	<parameter name="sdate" class="net.sf.jasperreports.types.date.DateRange">
+		<defaultValueExpression><![CDATA[DATERANGE("DAY-10")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="edate" class="net.sf.jasperreports.types.date.DateRange">
+		<defaultValueExpression><![CDATA[DATERANGE("DAY")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="AssignedStation" class="java.util.List"/>
+	<parameter name="FaultStation" class="java.util.List"/>
+	<parameter name="LossCode" class="java.util.List"/>
+	<parameter name="FaultAirline" class="java.util.List"/>
+	<queryString language="SQL">
+		<![CDATA[select       
+	   incident.stationassigned_ID,         
+       s1.stationcode as ascode,      
+	   faultstation_ID,
+       s2.stationcode as fscode, 
+       s2.station_id as fsid, 
+       s2.companycode_ID as fccode, 
+       incident.ID AS ID,
+       incident.incident_id as IncidentID,
+       incident.itemType_ID,
+       incident.loss_code,
+       incident.createdate,
+	   status.status_ID as stdesc,
+	   status.description as Status,
+	   itemtype.description as itdesc, 
+	   GROUP_CONCAT(DISTINCT (CONCAT_WS(' ',p.firstname,p.lastname ))) FIRSTNAME,
+	   GROUP_CONCAT(DISTINCT (CONCAT_WS(' ' ,it.legfrom,IT.FLIGHTNUM))) itinerary,
+	   SUBSTRING_INDEX(GROUP_CONCAT(CAST(it.legto AS CHAR) ORDER BY (IT.ORDER_ID) DESC), ',', 1) AS  LEGTO,
+	   agent.username as agentusername,
+       incident.status_ID
+from        
+	  station s1,   
+      station s2,   
+      status, 
+	  itemtype,
+	  agent, 
+	  incident 
+	  left outer join passenger p on p.incident_ID = incident.ID       
+	  left outer join itinerary it on it.incident_ID = incident.ID and 
+      it.itinerarytype = 0     
+where     
+	   s1.station_ID = incident.stationassigned_ID and        
+	   s2.station_ID = incident.faultstation_ID  and 
+	   status.status_ID = incident.status_ID and      
+       agent.Agent_ID = incident.agent_ID and       
+	   itemtype.ItemType_ID = incident.itemType_ID           
+         and $X{IN, incident.status_ID, IncidentStatus}
+		and $X{IN, incident.itemtype_id,ItemType}
+		and $X{IN, s1.companycode_ID,CompanyID}
+		and $X{BETWEEN, incident.createdate, sdate,edate}
+		and $X{IN, incident.stationassigned_ID,AssignedStation}
+		and $X{IN, incident.faultstation_ID ,FaultStation}
+		and $X{IN, incident.loss_code, LossCode}    
+		and $X{IN, s2.companycode_ID, FaultAirline}  
+GROUP BY  incident.stationassigned_ID,incident.itemtype_ID,incident.incident_ID,it.itinerary_ID]]>
+	</queryString>
+	<field name="stationassigned_ID" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="stationassigned_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="incident"/>
+	</field>
+	<field name="ascode" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="ascode"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="faultstation_ID" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="faultstation_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="incident"/>
+	</field>
+	<field name="fscode" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="fscode"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="fsid" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="fsid"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="fccode" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="fccode"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="ID" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="incident"/>
+	</field>
+	<field name="IncidentID" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="IncidentID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="incident"/>
+	</field>
+	<field name="itemType_ID" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="itemType_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="incident"/>
+	</field>
+	<field name="loss_code" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="loss_code"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="incident"/>
+	</field>
+	<field name="createdate" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="createdate"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="incident"/>
+	</field>
+	<field name="stdesc" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="stdesc"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="status"/>
+	</field>
+	<field name="Status" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Status"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="status"/>
+	</field>
+	<field name="itdesc" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="itdesc"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itemtype"/>
+	</field>
+	<field name="FIRSTNAME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="FIRSTNAME"/>
+	</field>
+	<field name="itinerary" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="itinerary"/>
+	</field>
+	<field name="LEGTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="LEGTO"/>
+	</field>
+	<field name="agentusername" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="agentusername"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="agent"/>
+	</field>
+	<field name="status_ID" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="status_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="incident"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="259" y="0" width="100" height="30" uuid="58c8331e-331e-48df-b994-98daf6e68b45">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7a3eb3f8-62f3-40d3-8914-33e56a835ce0"/>
+				</reportElement>
+				<text><![CDATA[IncidentID]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="345" y="0" width="100" height="30" uuid="a1a17bb8-9190-4ee5-a2b2-f73efb9b727a">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="024cc123-4678-4f1c-93e9-b2847b5c4b99"/>
+				</reportElement>
+				<text><![CDATA[fscode]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch">
+			<textField>
+				<reportElement x="259" y="63" width="100" height="30" uuid="d999e8c8-756d-46bf-acc1-820f6880f7ad">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="7a3eb3f8-62f3-40d3-8914-33e56a835ce0"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{IncidentID}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="345" y="62" width="100" height="30" uuid="4e1a30f5-3eab-4a77-a2ef-64446d1de1a4">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="024cc123-4678-4f1c-93e9-b2847b5c4b99"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{fscode}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

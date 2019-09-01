@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 7.1.0.final using JasperReports Library version 6.4.3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="FR_AllByDetails_NoMatches_0Match_T" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ebd8793e-b01d-41d4-b637-145f5a301937">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="NT_American_Fraud_QA3_DB"/>
+	<parameter name="CompanyID" class="java.util.List"/>
+	<parameter name="sdate" class="net.sf.jasperreports.types.date.DateRange">
+		<defaultValueExpression><![CDATA[DATERANGE("DAY-10")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="edate" class="net.sf.jasperreports.types.date.DateRange">
+		<defaultValueExpression><![CDATA[DATERANGE("DAY")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="Parameter4" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[select * from(
+(
+  
+  SELECT
+        c.file_id,
+        "" as file2_id,
+		"" as match_id,
+        "" as description,
+        "" as descriptionkey,
+		"" as descriptionvalue,
+		"" as descriptionunit,
+        c.remote_claim_id ,
+        c.company_code,        
+		p.firstName,
+        p.lastName,
+        p.emailAddress,
+        ph.phoneNumber,
+        a.address1,
+        a.address2,
+        a.city,
+        a.state,
+        a.zip,
+        a.country,
+        c.fraudstatusid
+    FROM(
+			SELECT DISTINCT c.file_id FROM fsclaim c  
+			WHERE( $X{IN, c.company_code,CompanyID}
+			       AND $X{BETWEEN, date(c.claimDate), sdate,edate} ) 
+		UNION 
+			SELECT c.file_id FROM fsclaim c
+			WHERE ( ( NOT (c.file_id IN (SELECT file1_id FROM matchhistory) ))  
+			AND $X{BETWEEN, date(c.claimDate), sdate,edate} )
+        )AA,
+        fsclaim c
+		
+    left outer join person  p on  p.claim_id = c.id
+    left outer join phone ph  on p.id = ph.person_id
+    left outer join fsaddress a on p.id = a.person_id
+        
+left outer join
+
+(
+
+SELECT
+        mh.file1_id as file1_id,
+        mh.file2_id,
+		md.match_id,
+        md.description,
+        md.descriptionkey,
+		md.descriptionvalue,
+		md.descriptionunit,
+        c.remote_claim_id ,
+        c.company_code,        
+		p.firstName,
+        p.lastName,
+        p.emailAddress,
+        ph.phoneNumber,
+        a.address1,
+        a.address2,
+        a.city,
+        a.state,
+        a.zip,
+        a.country,
+        c.fraudstatusid
+    FROM(
+			SELECT DISTINCT c.file_id FROM fsclaim c  
+			WHERE( $X{IN, c.company_code,CompanyID} 
+				AND $X{BETWEEN, date(c.claimDate), sdate,edate}
+			) 
+		UNION 
+			SELECT c.file_id FROM fsclaim c 
+			WHERE ( ( NOT (c.file_id IN (SELECT file1_id FROM matchhistory) ))  
+			    AND $X{BETWEEN, date(c.claimDate), sdate,edate} )
+        )AA,
+        matchhistory mh
+    INNER JOIN matchdetail md ON mh.id = md.match_id
+	inner join fsclaim c on  c.file_id = mh.file1_id		
+    left outer join person  p on  p.claim_id = c.id
+    left outer join phone ph  on p.id = ph.person_id
+    left outer join fsaddress a on p.id = a.person_id
+    WHERE  mh.file1_id =AA.file_id
+
+GROUP BY
+        mh.file1_id
+    ORDER BY
+        mh.file1_id ASC
+) temp
+        on temp.file1_id = c.file_id
+where ( c.file_id =AA.file_id ) 
+  GROUP BY
+        c.file_id
+  ORDER BY
+        c.file_id ASC
+)       
+UNION
+	(
+	SELECT
+			mh.file1_id,
+			mh.file2_id,
+			md.match_id,
+			md.description,
+			md.descriptionkey,
+			md.descriptionvalue,
+			md.descriptionunit,
+			c.remote_claim_id ,
+			c.company_code,        
+			p.firstName,
+			p.lastName,
+			p.emailAddress,
+			ph.phoneNumber,
+			a.address1,
+			a.address2,
+			a.city,
+			a.state,
+			a.zip,
+			a.country,
+			c.fraudstatusid
+		FROM(
+				SELECT DISTINCT c.file_id FROM fsclaim c 
+				WHERE( $X{IN, c.company_code,CompanyID} 
+				      AND $X{BETWEEN, date(c.claimDate), sdate,edate} ) 
+			UNION 
+				SELECT c.file_id FROM fsclaim c 
+				WHERE ( ( NOT (c.file_id IN (SELECT file1_id FROM matchhistory) ))  
+				AND $X{BETWEEN, date(c.claimDate), sdate,edate} )
+			)AA,
+			matchhistory mh
+		INNER JOIN matchdetail md ON mh.id = md.match_id
+		inner join fsclaim c on  c.file_id = mh.file2_id		
+		left outer join person  p on  p.claim_id = c.id
+		left outer join phone ph  on p.id = ph.person_id
+		left outer join fsaddress a on p.id = a.person_id
+		WHERE  mh.file1_id =AA.file_id 
+
+	GROUP BY
+        md.match_id 
+    ORDER BY
+        mh.file1_id ASC				 
+	 )
+	 ) ab]]>
+	</queryString>
+	<field name="file_id" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="file_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="fsclaim"/>
+	</field>
+	<field name="file2_id" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="file2_id"/>
+	</field>
+	<field name="match_id" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="match_id"/>
+	</field>
+	<field name="description" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="description"/>
+	</field>
+	<field name="descriptionkey" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descriptionkey"/>
+	</field>
+	<field name="descriptionvalue" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descriptionvalue"/>
+	</field>
+	<field name="descriptionunit" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="descriptionunit"/>
+	</field>
+	<field name="remote_claim_id" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="remote_claim_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="fsclaim"/>
+	</field>
+	<field name="company_code" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="company_code"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="fsclaim"/>
+	</field>
+	<field name="firstName" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="firstName"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="person"/>
+	</field>
+	<field name="lastName" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="lastName"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="person"/>
+	</field>
+	<field name="emailAddress" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="emailAddress"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="person"/>
+	</field>
+	<field name="phoneNumber" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="phoneNumber"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="phone"/>
+	</field>
+	<field name="address1" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="address1"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="fsaddress"/>
+	</field>
+	<field name="address2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="address2"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="fsaddress"/>
+	</field>
+	<field name="city" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="city"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="fsaddress"/>
+	</field>
+	<field name="state" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="state"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="fsaddress"/>
+	</field>
+	<field name="zip" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="zip"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="fsaddress"/>
+	</field>
+	<field name="country" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="country"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="fsaddress"/>
+	</field>
+	<field name="fraudstatusid" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="fraudstatusid"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="fsclaim"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch">
+			<textField>
+				<reportElement x="240" y="1" width="100" height="30" uuid="df3d02c2-bc12-4cdb-9553-5956cdcdb190"/>
+				<textFieldExpression><![CDATA[$F{file_id}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

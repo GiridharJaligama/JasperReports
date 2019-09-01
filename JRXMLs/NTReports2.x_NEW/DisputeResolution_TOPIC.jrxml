@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 7.1.0.final using JasperReports Library version 6.4.3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="DisputeResolution_TOPIC" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f51d717e-55d7-40b4-bee9-09bb83acd0bd">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="NT2x_QA1"/>
+	<parameter name="sdate" class="net.sf.jasperreports.types.date.DateRange">
+		<defaultValueExpression><![CDATA[DATERANGE("DAY")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="edate" class="net.sf.jasperreports.types.date.DateRange">
+		<defaultValueExpression><![CDATA[DATERANGE("DAY")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="AssignedStation" class="java.util.List"/>
+	<parameter name="PreviousStation" class="java.util.List"/>
+	<queryString language="SQL">
+		<![CDATA[select i.createdate, d.created_timestamp,        
+       d.resolution_timestamp,d.Incident_ID, 	   
+	   d.status_ID,dagent.username disputingagentusername, 	  
+	   wagent.username workingagentusername, 
+	   d.typeOfChange, 	   
+	   d.beforeDisputeLossCode,
+	   prestation.stationcode beforedisputefaultstation, 	   
+	   d.suggestedLossCode,
+	   suggestedstation.stationcode suggestedfaultstation, 	   
+	   d.determinedLossCode,
+	   d.determined_station_ID,
+	   determinedfaultstation.stationcode newfaultstation, 	   
+	   status.description as StatusDesc 	   
+from dispute d,
+     agent dagent,
+	 agent wagent,
+	 station prestation,
+	 status, 	    
+	 station suggestedstation,
+	 station determinedfaultstation, 
+	 incident i    	   
+where 1=1 and d.dispute_agent_ID = dagent.Agent_ID 	   
+      and d.resolution_agent_ID = wagent.Agent_ID 	   
+	  and d.before_dispute_fault_station_ID = prestation.Station_ID 	   
+	  and d.suggested_station_ID = suggestedstation.Station_ID 	   
+	  and d.determined_station_ID = determinedfaultstation.Station_ID 	   
+	  and d.Incident_ID = i.Incident_ID 	   
+	  and status.status_ID =d.status_ID
+	  and $X{BETWEEN, date(d.created_timestamp), sdate,edate}
+	  and $X{IN, determinedfaultstation.stationcode,AssignedStation}
+	  and $X{IN, prestation.stationcode,PreviousStation}]]>
+	</queryString>
+	<field name="createdate" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="createdate"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="incident"/>
+	</field>
+	<field name="created_timestamp" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="created_timestamp"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="dispute"/>
+	</field>
+	<field name="resolution_timestamp" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="resolution_timestamp"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="dispute"/>
+	</field>
+	<field name="Incident_ID" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Incident_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="dispute"/>
+	</field>
+	<field name="status_ID" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="status_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="dispute"/>
+	</field>
+	<field name="disputingagentusername" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="disputingagentusername"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="agent"/>
+	</field>
+	<field name="workingagentusername" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="workingagentusername"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="agent"/>
+	</field>
+	<field name="typeOfChange" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="typeOfChange"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="dispute"/>
+	</field>
+	<field name="beforeDisputeLossCode" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="beforeDisputeLossCode"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="dispute"/>
+	</field>
+	<field name="beforedisputefaultstation" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="beforedisputefaultstation"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="suggestedLossCode" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="suggestedLossCode"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="dispute"/>
+	</field>
+	<field name="suggestedfaultstation" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="suggestedfaultstation"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="determinedLossCode" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="determinedLossCode"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="dispute"/>
+	</field>
+	<field name="determined_station_ID" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="determined_station_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="dispute"/>
+	</field>
+	<field name="newfaultstation" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="newfaultstation"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="StatusDesc" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="StatusDesc"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="status"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="54" splitType="Stretch">
+			<textField>
+				<reportElement x="144" y="24" width="100" height="30" uuid="32c0d7bc-cde5-4aad-9d2c-2f25f1067f9b"/>
+				<textFieldExpression><![CDATA[$F{Incident_ID}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

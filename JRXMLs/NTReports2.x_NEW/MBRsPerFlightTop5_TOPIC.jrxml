@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 7.1.0.final using JasperReports Library version 6.4.3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="MBRsPerFlightTop5" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9a4bdbc6-cd63-44bd-bd45-92c273e28930">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="TESTING"/>
+	<parameter name="IncidentStatus" class="java.util.List"/>
+	<parameter name="ItemType" class="java.util.List"/>
+	<parameter name="CompanyID" class="java.util.List"/>
+	<parameter name="sdate" class="net.sf.jasperreports.types.date.DateRange">
+		<defaultValueExpression><![CDATA[DATERANGE("DAY")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="edate" class="net.sf.jasperreports.types.date.DateRange">
+		<defaultValueExpression><![CDATA[DATERANGE("DAY")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="AssignedStation" class="java.util.List"/>
+	<queryString language="SQL">
+		<![CDATA[select * from (select * from (select incidentcount ,airlinea,flightnuma,X.stationcodea,
+       @s_rank := IF(@previous_station = X.stationcodea, @s_rank + 1, 1) AS s_rank,
+		(@previous_station := X.stationcodea) as p
+        from(
+select count(itinerary.incident_ID) as incidentcount,
+       itinerary.airline as airlinea, 
+       itinerary.flightnum as flightnuma,
+       s1.stationcode as stationcodea,
+       s1.Station_ID
+from
+	 Itinerary itinerary, incident i,station s1
+where itinerary.itinerarytype = 0 and itinerary.flightnum <> ''
+       and i.stationassigned_ID = s1.station_ID
+       and itinerary.incident_ID = i.id  
+	   and $X{IN, i.status_ID, IncidentStatus}
+       and $X{IN, i.itemtype_id,ItemType}	
+	   and $X{IN, s1.companycode_ID,CompanyID}
+       and $X{BETWEEN, date(i.createdate), sdate,edate} 
+	   and $X{IN, i.stationassigned_ID,AssignedStation}
+       group by s1.station_ID, itinerary.airline,itinerary.flightnum       
+       order by s1.Station_ID, count(itinerary.incident_ID) DESC
+       ) as X) as Y where s_rank <= 5 ) as A,
+(select count(item.item_ID) as itemcount,
+       itinerary.airline, 
+       itinerary.flightnum,
+       s1.stationcode,
+       i.stationassigned_ID 
+from 
+      Itinerary itinerary, Item item , incident i, station s1
+where itinerary.itinerarytype = 0       
+      and item.incident_ID = i.id 
+      and item.incident_ID = itinerary.incident_ID
+      and i.stationassigned_ID = s1.station_ID
+	  and $X{IN, i.status_ID, IncidentStatus}
+      and $X{IN, i.itemtype_id,ItemType}	
+      and $X{IN, s1.companycode_ID,CompanyID}
+      and $X{BETWEEN, date(i.createdate), sdate,edate}
+	  and $X{IN, i.stationassigned_ID,AssignedStation}	  
+	   group by i.stationassigned_ID,itinerary.airline,itinerary.flightnum,i.createdate
+       order by 1 desc, i.createdate desc) as B
+where a.flightnuma =b.flightnum	and a.stationcodea = b.stationcode]]>
+	</queryString>
+	<field name="incidentcount" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="incidentcount"/>
+	</field>
+	<field name="airlinea" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="airlinea"/>
+	</field>
+	<field name="flightnuma" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="flightnuma"/>
+	</field>
+	<field name="stationcodea" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="stationcodea"/>
+	</field>
+	<field name="s_rank" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="s_rank"/>
+	</field>
+	<field name="p" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="p"/>
+	</field>
+	<field name="itemcount" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="itemcount"/>
+	</field>
+	<field name="airline" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="airline"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itinerary"/>
+	</field>
+	<field name="flightnum" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="flightnum"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itinerary"/>
+	</field>
+	<field name="stationcode" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="stationcode"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="stationassigned_ID" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="stationassigned_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="incident"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="96" splitType="Stretch">
+			<textField>
+				<reportElement x="365" y="66" width="100" height="30" uuid="b7fc798a-5ec2-4b4f-9e4a-91225c0fa19d"/>
+				<textFieldExpression><![CDATA[$F{incidentcount}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

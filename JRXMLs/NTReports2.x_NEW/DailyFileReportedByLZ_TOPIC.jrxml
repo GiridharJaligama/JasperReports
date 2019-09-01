@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 7.1.0.final using JasperReports Library version 6.4.3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="DailyFileReportedByLZ_TOPIC" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="3aa45cd5-37ea-48c3-95d7-b9775177ad23">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="TESTING"/>
+	<parameter name="sdate" class="net.sf.jasperreports.types.date.DateRange">
+		<defaultValueExpression><![CDATA[DATERANGE("DAY")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="edate" class="net.sf.jasperreports.types.date.DateRange">
+		<defaultValueExpression><![CDATA[DATERANGE("DAY")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="AssignedStation" class="java.util.List"/>
+	<parameter name="CompanyID" class="java.util.List"/>
+	<queryString language="SQL">
+		<![CDATA[select incident.incident_ID as "FileID", 
+       agent.username,	    
+	   s1.stationcode as "assignedstation", 
+	   s2.stationcode as "createdstation",	    	  
+	   incident.createdate as "CreateDate", 	    	
+	   incident.stationassigned_ID	 
+ from Incident incident,agent, station s1, station s2 	    	 
+ where 
+       incident.itemType_ID = 1 and 	 
+	   incident.status_ID <> 13 and 		
+	   agent.Agent_ID = incident.agent_ID and  	
+	   s1.station_id = incident.stationassigned_id and  
+	   s2.station_id  = incident.stationcreated_ID
+       and $X{BETWEEN, date(incident.createdate), sdate,edate}
+	   and $X{IN, incident.stationassigned_id,AssignedStation}
+	   and $X{IN, s1.companycode_ID,CompanyID}]]>
+	</queryString>
+	<field name="FileID" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="FileID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="incident"/>
+	</field>
+	<field name="username" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="username"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="agent"/>
+	</field>
+	<field name="assignedstation" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="assignedstation"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="createdstation" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="createdstation"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="CreateDate" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="CreateDate"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="incident"/>
+	</field>
+	<field name="stationassigned_ID" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="stationassigned_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="incident"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="37" splitType="Stretch">
+			<textField>
+				<reportElement x="144" y="7" width="100" height="30" uuid="e6e507e9-f8c1-4570-8bbc-ddf1b404f719"/>
+				<textFieldExpression><![CDATA[$F{FileID}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

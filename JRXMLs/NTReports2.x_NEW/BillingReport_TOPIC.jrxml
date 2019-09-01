@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 7.1.0.final using JasperReports Library version 6.4.3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="BillingReport_TOPIC" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="c2518baf-6f5f-4465-82a7-7ec84a486932">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="NT2x_QA1"/>
+	<parameter name="sdate" class="net.sf.jasperreports.types.date.DateRange">
+		<defaultValueExpression><![CDATA[DATERANGE("DAY")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="edate" class="net.sf.jasperreports.types.date.DateRange">
+		<defaultValueExpression><![CDATA[DATERANGE("DAY")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CompanyID" class="java.util.List"/>
+	<parameter name="ItemType" class="java.util.List"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT billing.companyCode, incident.itemType_ID, itemtype.description, count(distinct billing.report_num) as NumTrans
+	   from Billing billing
+	   join Incident incident
+	   join Itemtype itemtype
+	where 1=1        
+	   and billing.report_num = incident.incident_ID
+       and incident.itemType_ID = itemtype.itemType_ID
+	   and $X{BETWEEN, date(incident.createdate), sdate,edate} 
+	   and $X{IN, billing.companyCode,CompanyID}
+	   and $X{IN, incident.itemtype_id,ItemType}		
+ group by billing.companyCode, incident.itemType_ID
+ order by billing.companyCode, incident.itemType_ID]]>
+	</queryString>
+	<field name="companyCode" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="companyCode"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="billing"/>
+	</field>
+	<field name="itemType_ID" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="itemType_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="incident"/>
+	</field>
+	<field name="description" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="description"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="itemtype"/>
+	</field>
+	<field name="NumTrans" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="NumTrans"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch">
+			<textField>
+				<reportElement x="253" y="25" width="100" height="30" uuid="5ee95b55-f136-492a-96b3-eaad319dc4ef"/>
+				<textFieldExpression><![CDATA[$F{itemType_ID}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

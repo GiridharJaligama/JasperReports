@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 7.1.0.final using JasperReports Library version 6.4.3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="FraudValuationReport_TOPIC" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="81ff472b-52ed-44ec-a47c-221e33be0a2e">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="NT_American_Fraud_QA3_DB"/>
+	<parameter name="sdate" class="net.sf.jasperreports.types.date.DateRange">
+		<defaultValueExpression><![CDATA[DATERANGE("DAY-2")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="edate" class="net.sf.jasperreports.types.date.DateRange">
+		<defaultValueExpression><![CDATA[DATERANGE("DAY")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CompanyID" class="java.util.List"/>
+	<queryString language="SQL">
+		<![CDATA[select * from (
+select distinct
+    count(c.remote_claim_id) matches, 
+	c.id, 
+	c.remote_claim_id, 
+	i.airlineIncidentId, 
+	c.claimDate, 
+	c.amountClaimed, 
+	c.amountClaimedCurrency, 
+	c.amountPaid, 
+	c.amountPaidCurrency,
+    c.statusId
+from fsfile f, fsclaim c, fsincident i ,matchhistory h
+where 1=1 
+      and c.file_id = f.id  
+	  and f.id = i.file_id 
+      and f.id = h.file1_id
+      and $X{IN, f.company_code,CompanyID} 
+	  and $X{BETWEEN, date(c.claimDate), sdate,edate}
+	group by c.remote_claim_id
+union
+       select 0 matches, c.id, 
+	   c.remote_claim_id, 
+	   i.airlineIncidentId, 
+	   c.claimDate, 
+	   c.amountClaimed, 
+	   c.amountClaimedCurrency, 
+	   c.amountPaid, 
+	   c.amountPaidCurrency,
+       c.statusId
+    from fsfile f,
+   	     fsclaim c, 
+		 fsincident i 
+where 1=1 and c.file_id = f.id  
+          and f.id = i.file_id 
+		  and $X{BETWEEN, date(c.claimDate), sdate,edate}
+		  and $X{IN, f.company_code,CompanyID}
+		  and f.id not in 
+		  (select  h.file1_id from matchhistory h  where h.file1_id!=c.remote_claim_id)
+         ) aa order by aa.remote_claim_id]]>
+	</queryString>
+	<field name="matches" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="matches"/>
+	</field>
+	<field name="id" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="id"/>
+	</field>
+	<field name="remote_claim_id" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="remote_claim_id"/>
+	</field>
+	<field name="airlineIncidentId" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="airlineIncidentId"/>
+	</field>
+	<field name="claimDate" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="claimDate"/>
+	</field>
+	<field name="amountClaimed" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="amountClaimed"/>
+	</field>
+	<field name="amountClaimedCurrency" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="amountClaimedCurrency"/>
+	</field>
+	<field name="amountPaid" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="amountPaid"/>
+	</field>
+	<field name="amountPaidCurrency" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="amountPaidCurrency"/>
+	</field>
+	<field name="statusId" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="statusId"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="45" splitType="Stretch">
+			<textField>
+				<reportElement x="188" y="15" width="100" height="30" uuid="969dee2e-e370-4440-88e4-dea093b4ed2e"/>
+				<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

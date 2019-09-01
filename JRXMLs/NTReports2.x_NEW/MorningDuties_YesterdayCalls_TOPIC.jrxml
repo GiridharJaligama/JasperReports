@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 7.1.0.final using JasperReports Library version 6.4.3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="MorningDuties_YesterdayCalls_TOPIC" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6d8e7e22-409f-4247-a295-bd58a4b4959c">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="NT2x_QA1"/>
+	<parameter name="tM_3" class="java.lang.String"/>
+	<parameter name="tM_2" class="java.lang.String"/>
+	<parameter name="tM_1" class="java.lang.String"/>
+	<parameter name="tM_4" class="java.lang.String"/>
+	<parameter name="tM_5" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[select * from
+           ( SELECT count(incident0_.Incident_ID) AS "Y2ndDayCalls"
+			  FROM Incident incident0_
+			  WHERE 1 = 1
+					AND incident0_.itemType_ID = 1
+					AND (
+						 incident0_.createdate = $P{tM_3}						 
+						 OR incident0_.createdate = $P{tM_2}						 
+					 )
+					AND (
+						 close_date IS NULL
+						 OR close_date > concat($P{tM_1},' 12:00:00')
+					)		
+		    ) AS y2nd,
+		  (
+		    SELECT count(incident0_.Incident_ID) AS "Y3rdDayCalls"
+				FROM Incident incident0_
+				WHERE 1 = 1
+				AND incident0_.itemType_ID = 1
+				AND (
+					 incident0_.createdate = $P{tM_4}					 
+					 OR incident0_.createdate = $P{tM_5}
+					 
+				 )
+				AND (
+					 close_date IS NULL
+					 OR close_date > concat($P{tM_2},' 12:00:00')
+				)
+		    ) AS Y3rd,
+			(
+			 SELECT count(incident0_.Incident_ID) AS "Y4thDayCalls"
+			    FROM Incident incident0_
+				WHERE 1 = 1
+				AND incident0_.itemType_ID = 1
+				AND (
+					 incident0_.createdate = $P{tM_4}
+					 
+					 OR incident0_.createdate < $P{tM_4}
+					)
+				AND (
+					close_date IS NULL
+					OR close_date > concat($P{tM_3},' 12:00:00')
+				)	
+				
+			) as Y4th,			
+	        (
+			 SELECT count(incident0_.Incident_ID) AS "Y2ndDayCompleted"
+				FROM Incident incident0_
+				WHERE 1 = 1
+					AND incident0_.itemType_ID = 1
+					AND (
+						incident0_.createdate = $P{tM_4}
+						
+						OR incident0_.createdate = $P{tM_3}
+						
+				)
+				AND (
+					 incident0_.Incident_ID IN (
+							SELECT twodaytask1_.incident_id
+								FROM task twodaytask1_
+								WHERE twodaytask1_.task_type = '2DAYTASK'
+								AND twodaytask1_.status_ID = 85
+				     )
+			    ) 
+			 )
+			 as y2ndcompleted,			
+			 (
+				SELECT count(incident0_.Incident_ID) AS "Y3rdDayCompleted"
+					FROM Incident incident0_
+					WHERE 1 = 1
+					AND incident0_.itemType_ID = 1
+					AND (
+							incident0_.createdate = $P{tM_4}
+							
+							OR incident0_.createdate = $P{tM_3}
+							
+						)
+					AND (
+							incident0_.Incident_ID IN (
+								SELECT threedayta1_.incident_id
+								FROM task threedayta1_
+								WHERE threedayta1_.task_type = '3DAYTASK'
+								AND threedayta1_.status_ID = 85
+						)
+			        )
+
+		    ) as y3rdcompleted,
+			(
+			  SELECT count(incident0_.Incident_ID) AS "Y4thDayCompleted"
+				FROM Incident incident0_
+				WHERE 1 = 1
+					AND incident0_.itemType_ID = 1
+					AND (
+						 incident0_.createdate = $P{tM_4}
+						 
+						OR incident0_.createdate < $P{tM_4}
+					)
+				 AND (
+						incident0_.Incident_ID IN (
+						SELECT fourdaytas1_.incident_id
+							FROM task fourdaytas1_
+							WHERE fourdaytas1_.task_type = '4DAYTASK'
+							AND fourdaytas1_.status_ID = 85
+						)
+			      )
+			)as y4thcompleted]]>
+	</queryString>
+	<field name="Y2ndDayCalls" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="Y2ndDayCalls"/>
+	</field>
+	<field name="Y3rdDayCalls" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="Y3rdDayCalls"/>
+	</field>
+	<field name="Y4thDayCalls" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="Y4thDayCalls"/>
+	</field>
+	<field name="Y2ndDayCompleted" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="Y2ndDayCompleted"/>
+	</field>
+	<field name="Y3rdDayCompleted" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="Y3rdDayCompleted"/>
+	</field>
+	<field name="Y4thDayCompleted" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="Y4thDayCompleted"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="49" y="0" width="100" height="30" uuid="c2070c04-3b62-4a71-a59e-48dba35ccbd9">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b9a5ff11-9cb0-43c7-a0e1-0cec1c75be8f"/>
+				</reportElement>
+				<text><![CDATA[Y2ndDayCalls]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch">
+			<textField>
+				<reportElement x="49" y="33" width="100" height="30" uuid="2f18fede-f255-4857-bf66-e9d19ab7efca">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="b9a5ff11-9cb0-43c7-a0e1-0cec1c75be8f"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{Y2ndDayCalls}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

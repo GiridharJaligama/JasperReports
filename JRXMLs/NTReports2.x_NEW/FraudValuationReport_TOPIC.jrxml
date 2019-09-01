@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 7.1.0.final using JasperReports Library version 6.4.3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="FraudValuationReport_TOPIC" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="af92aa98-5015-49d5-b3f8-9342820c08f7">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="NT2x_QA1"/>
+	<parameter name="sdate" class="net.sf.jasperreports.types.date.DateRange">
+		<defaultValueExpression><![CDATA[DATERANGE("DAY")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="edate" class="net.sf.jasperreports.types.date.DateRange">
+		<defaultValueExpression><![CDATA[DATERANGE("DAY")]]></defaultValueExpression>
+	</parameter>
+	<queryString language="SQL">
+		<![CDATA[select c.id, 
+       i.airlineIncidentId, 
+	   c.claimDate, 
+	   c.amountClaimed, 
+	   c.amountClaimedCurrency, 
+	   c.amountPaid, 
+	   c.amountPaidCurrency, 
+	   s.description 
+from fsfile f, 
+     fsclaim c, 
+	 fsincident i, 
+	 status s 
+where 1=1 
+   and $X{BETWEEN, date(c.claimDate), sdate,edate}
+   and c.file_id   = f.id 
+   and c.statusId  = s.Status_ID 
+   and f.id        = i.file_id]]>
+	</queryString>
+	<field name="id" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="fsclaim"/>
+	</field>
+	<field name="airlineIncidentId" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="airlineIncidentId"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="fsincident"/>
+	</field>
+	<field name="claimDate" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="claimDate"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="fsclaim"/>
+	</field>
+	<field name="amountClaimed" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="amountClaimed"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="fsclaim"/>
+	</field>
+	<field name="amountClaimedCurrency" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="amountClaimedCurrency"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="fsclaim"/>
+	</field>
+	<field name="amountPaid" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="amountPaid"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="fsclaim"/>
+	</field>
+	<field name="amountPaidCurrency" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="amountPaidCurrency"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="fsclaim"/>
+	</field>
+	<field name="description" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="description"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="status"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="47" splitType="Stretch">
+			<textField>
+				<reportElement x="115" y="17" width="100" height="30" uuid="64550151-d24b-4cc6-9d2c-83ef28ddd4f5"/>
+				<textFieldExpression><![CDATA[$F{id}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 7.1.0.final using JasperReports Library version 6.4.3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="OnhandBaggageReport_Summary_TOPIC" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d9bc6201-5ad4-4e14-9ad8-14c281bfcbe1">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="TESTING"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="220"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="769"/>
+	<parameter name="CompanyID" class="java.util.List"/>
+	<parameter name="OhdIncidentStatus" class="java.util.List"/>
+	<parameter name="BagDisposalStatus" class="java.util.List"/>
+	<parameter name="FoundStation" class="java.util.List"/>
+	<parameter name="HoldStation" class="java.util.List"/>
+	<parameter name="sdate" class="net.sf.jasperreports.types.date.DateRange">
+		<defaultValueExpression><![CDATA[DATERANGE("DAY")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="edate" class="net.sf.jasperreports.types.date.DateRange">
+		<defaultValueExpression><![CDATA[DATERANGE("DAY")]]></defaultValueExpression>
+	</parameter>
+	<queryString language="SQL">
+		<![CDATA[select
+       ohd.found_station_ID,
+       s1.stationcode as fscode,
+	   holding_station_ID,
+       s2.stationcode as hscode,
+       ohd.OHD_ID,
+       ohd.founddate,
+       st1.status_ID as stdesc,
+       st1.description as status ,  
+       st2.status_ID as bdesc,
+       st2.description as baggagestatus,
+       GROUP_CONCAT(DISTINCT (CONCAT_WS(' ',p.firstname,p.lastname ))) FIRSTNAME,
+       GROUP_CONCAT(DISTINCT (CONCAT_WS(' ' ,it.legfrom,IT.FLIGHTNUM))) LEGFROM,
+       SUBSTRING_INDEX(GROUP_CONCAT(CAST(it.legto AS CHAR) ORDER BY (IT.ORDER_ID) DESC), ',', 1) AS  LEGTO,
+       s3.stationcode as faultstationcode,
+       cic.loss_code,
+       ohd.color,
+	   ohd.type,
+       ohd.claimnum as  "Bag Tag Number"
+
+from station s1,station s2,status st1,agent,ohd
+     left outer join ohd_passenger p on p.OHD_ID = ohd.ID
+	 left outer join ohd_itinerary it on it.OHD_ID = ohd.ID
+	 left outer join station s3 on s3.station_ID = ohd.faultStation_ID
+	 left outer join company_irregularity_codes cic on cic.code_id = ohd.loss_code
+	 left outer join status st2 on st2.status_ID=ohd.status_id
+
+where
+     s1.station_ID = ohd.found_station_ID and
+	 s2.station_ID = ohd.holding_station_ID and
+	 st1.status_ID = ohd.status_ID and
+	 agent.Agent_ID = ohd.agent_ID
+	 and $X{IN, s1.companycode_ID,CompanyID}
+	 and $X{IN, ohd.status_ID,OhdIncidentStatus}
+	 and $X{IN, ohd.disposal_status_id,BagDisposalStatus}
+	 and $X{IN, s1.stationcode,FoundStation}
+	 and $X{IN, s2.stationcode,HoldStation}	 
+	 and $X{[BETWEEN], ohd.founddate, sdate,edate}
+group by ohd.found_station_ID,
+       s1.stationcode ,
+	   holding_station_ID,
+	   s2.stationcode ,
+	   ohd.OHD_ID,
+	   ohd.founddate,
+	   st1.status_ID ,
+       st1.description ,  
+       st2.status_ID ,
+	   st2.description,
+	   s3.stationcode,
+       cic.loss_code,
+       ohd.color,
+       ohd.type,
+       ohd.claimnum]]>
+	</queryString>
+	<field name="found_station_ID" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="found_station_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ohd"/>
+	</field>
+	<field name="fscode" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="fscode"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="holding_station_ID" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="holding_station_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ohd"/>
+	</field>
+	<field name="hscode" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="hscode"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="OHD_ID" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="OHD_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ohd"/>
+	</field>
+	<field name="founddate" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="founddate"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ohd"/>
+	</field>
+	<field name="stdesc" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="stdesc"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="status"/>
+	</field>
+	<field name="status" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="status"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="status"/>
+	</field>
+	<field name="bdesc" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="bdesc"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="status"/>
+	</field>
+	<field name="baggagestatus" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="baggagestatus"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="status"/>
+	</field>
+	<field name="firstname" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="firstname"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ohd_passenger"/>
+	</field>
+	<field name="lastname" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="lastname"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ohd_passenger"/>
+	</field>
+	<field name="legfrom" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="legfrom"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ohd_itinerary"/>
+	</field>
+	<field name="legto" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="legto"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ohd_itinerary"/>
+	</field>
+	<field name="flightnum" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="flightnum"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ohd_itinerary"/>
+	</field>
+	<field name="faultstationcode" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="faultstationcode"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="loss_code" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="loss_code"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="company_irregularity_codes"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch">
+			<textField>
+				<reportElement x="146" y="16" width="100" height="30" uuid="8a008a44-b0cc-4db3-9ec2-025547c39527"/>
+				<textFieldExpression><![CDATA[$F{found_station_ID}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

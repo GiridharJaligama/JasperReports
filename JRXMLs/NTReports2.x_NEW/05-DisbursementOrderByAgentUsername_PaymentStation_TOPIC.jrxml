@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 7.1.0.final using JasperReports Library version 6.4.3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="05-DisbursementOrderByAgentUsername_PaymentStation_TOPIC" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="86909ce3-4a47-4717-813f-24f88d576bd3">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="NT2x_QA1"/>
+	<parameter name="ItemType" class="java.util.List"/>
+	<parameter name="sdate" class="net.sf.jasperreports.types.date.DateRange">
+		<defaultValueExpression><![CDATA[DATERANGE("DAY")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="edate" class="net.sf.jasperreports.types.date.DateRange">
+		<defaultValueExpression><![CDATA[DATERANGE("DAY")]]></defaultValueExpression>
+	</parameter>
+	<parameter name="draftpaidsdate" class="net.sf.jasperreports.types.date.DateRange"/>
+	<parameter name="draftpaidedate" class="net.sf.jasperreports.types.date.DateRange"/>
+	<parameter name="ExpenseStation" class="java.util.List"/>
+	<parameter name="FaultStation" class="java.util.List"/>
+	<parameter name="LossCode" class="java.util.List"/>
+	<parameter name="IncidentStatus" class="java.util.List"/>
+	<parameter name="CompanyID" class="java.util.List"/>
+	<parameter name="ExpenseTypeID" class="java.util.List"/>
+	<queryString language="SQL">
+		<![CDATA[Select round(sum(e2.amount),2) as checkamt, 
+				i.createdate,
+				e2.currency_ID, sum(e2.amountClaimed) as voucheramt, 
+				 e2.expenseType_ID, e2.expenselocation_ID,
+				s1.stationcode as expenselocstationcode, e2.draftpaiddate, 
+				st1.description, s2.station_ID, s2.stationcode as faultstationcode, 
+				i.loss_code, a.username as expcreateusername, e2.incident_id as ntincident_ID,
+				s3.stationcode as agentstationcode, e2.status_ID, e2.paytype, e2.paycode, 
+				concat(e2.lastname, ' ', e2.firstname) as fullname, e2.address1, 
+				e2.address2, e2.city, e2.state_ID, e2.zip, e2.email, i.recordlocator,
+				i.itemtype_ID, e2.expensepayout_ID, st.description as ExpensePaystatus 
+	 from expensepayout e2 	   
+				 left outer join Incident i on e2.incident_id = i.incident_id
+				 left outer join Station s2 on s2.station_id = i.faultStation_id
+				 left outer join station s4 on s4.Station_ID = i.stationassigned_ID
+				 left outer join Status st1 on st1.status_ID = i.status_ID
+				 left outer join Station s1 on e2.expenselocation_ID = s1.station_id
+				 left outer join Agent a on e2.agent_id = a.agent_id
+				 left outer join Station s3 on s3.station_id = a.station_id 
+				 left outer join Status st on e2.status_ID = st.status_ID
+      where 
+		         $X{IN, i.itemtype_id,ItemType}		
+		         and $X{BETWEEN, date(i.createdate), sdate,edate} 			   
+			     and $X{BETWEEN, date(e2.draftpaiddate), draftpaidsdate,draftpaidedate}
+			     and $X{IN, s1.stationcode,ExpenseStation}
+			     and $X{IN, s2.stationcode,FaultStation}
+			     and $X{IN, i.loss_code,LossCode}
+			     and $X{IN, i.status_ID, IncidentStatus}
+			     and $X{IN, s1.companycode_ID,CompanyID}
+			     and $X{IN, e2.expenseType_ID,ExpenseTypeID}
+		 group by s1.stationcode, e2.expenselocation_ID,  
+		     	s2.station_ID, s2.stationcode, e2.incident_ID, 
+				e2.expensetype_ID,e2.draftpaiddate,e2.status_ID,
+				e2.currency_ID, i.loss_code,a.username				
+         order by s3.stationcode, a.username]]>
+	</queryString>
+	<field name="checkamt" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="checkamt"/>
+	</field>
+	<field name="createdate" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="createdate"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="incident"/>
+	</field>
+	<field name="currency_ID" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="currency_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="expensepayout"/>
+	</field>
+	<field name="voucheramt" class="java.lang.Double">
+		<property name="com.jaspersoft.studio.field.label" value="voucheramt"/>
+	</field>
+	<field name="expenseType_ID" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="expenseType_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="expensepayout"/>
+	</field>
+	<field name="expenselocation_ID" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="expenselocation_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="expensepayout"/>
+	</field>
+	<field name="expenselocstationcode" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="expenselocstationcode"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="draftpaiddate" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="draftpaiddate"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="expensepayout"/>
+	</field>
+	<field name="description" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="description"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="status"/>
+	</field>
+	<field name="station_ID" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="station_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="faultstationcode" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="faultstationcode"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="loss_code" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="loss_code"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="incident"/>
+	</field>
+	<field name="expcreateusername" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="expcreateusername"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="agent"/>
+	</field>
+	<field name="ntincident_ID" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="ntincident_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="expensepayout"/>
+	</field>
+	<field name="agentstationcode" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="agentstationcode"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="status_ID" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="status_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="expensepayout"/>
+	</field>
+	<field name="paytype" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="paytype"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="expensepayout"/>
+	</field>
+	<field name="paycode" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="paycode"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="expensepayout"/>
+	</field>
+	<field name="fullname" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="fullname"/>
+	</field>
+	<field name="address1" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="address1"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="expensepayout"/>
+	</field>
+	<field name="address2" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="address2"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="expensepayout"/>
+	</field>
+	<field name="city" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="city"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="expensepayout"/>
+	</field>
+	<field name="state_ID" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="state_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="expensepayout"/>
+	</field>
+	<field name="zip" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="zip"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="expensepayout"/>
+	</field>
+	<field name="email" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="email"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="expensepayout"/>
+	</field>
+	<field name="recordlocator" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="recordlocator"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="incident"/>
+	</field>
+	<field name="itemtype_ID" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="itemtype_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="incident"/>
+	</field>
+	<field name="expensepayout_ID" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="expensepayout_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="expensepayout"/>
+	</field>
+	<field name="ExpensePaystatus" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="ExpensePaystatus"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="status"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="49" splitType="Stretch">
+			<textField>
+				<reportElement x="251" y="19" width="100" height="30" uuid="3226e437-7132-4f2d-9d46-4810c7774524"/>
+				<textFieldExpression><![CDATA[$F{expenseType_ID}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

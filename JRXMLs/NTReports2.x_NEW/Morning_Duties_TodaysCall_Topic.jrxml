@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 7.1.0.final using JasperReports Library version 6.4.3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Morning_Duties_TodaysCall_Topic" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a9206723-0122-421f-bc93-13850041c233">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="NT2x_QA1"/>
+	<parameter name="tM_1" class="java.lang.String"/>
+	<parameter name="tM_2" class="java.lang.String"/>
+	<parameter name="tM_3" class="java.lang.String"/>
+	<queryString language="SQL">
+		<![CDATA[select * from (
+               SELECT count(incident0_.Incident_ID) AS "2nd Day Calls"
+					FROM Incident incident0_
+			   WHERE 1 = 1
+					AND incident0_.itemType_ID = 1
+					AND (
+							incident0_.createdate = $P{tM_2}							
+							OR incident0_.createdate =  $P{tM_1}							
+						 )
+					AND (
+						    close_date IS NULL
+							OR close_date > concat($P{tM_1},' 12:00:00')
+					) ) as 2nd,  
+		       (
+				 SELECT count(incident0_.Incident_ID) AS "3rd Day Calls"
+						FROM Incident incident0_
+						WHERE 1 = 1
+							AND incident0_.itemType_ID = 1
+							AND (
+								 incident0_.createdate = $P{tM_3}								 
+								 OR incident0_.createdate = $P{tM_2}								 
+							)
+							 AND (
+								  close_date IS NULL
+								  OR close_date > concat($P{tM_2},' 12:00:00')
+							)			
+		      ) as 3rd, 
+              (
+					SELECT count(incident0_.Incident_ID) AS "4th Day Calls"
+						FROM Incident incident0_
+							WHERE 1 = 1
+					        AND incident0_.itemType_ID = 1
+							AND (
+								 incident0_.createdate = $P{tM_3}								 
+								 OR incident0_.createdate < $P{tM_3}
+							)
+							AND (
+								 close_date IS NULL
+								 OR close_date > concat($P{tM_3},' 12:00:00')
+							)		
+		      ) as 4th]]>
+	</queryString>
+	<field name="2nd Day Calls" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="2nd Day Calls"/>
+	</field>
+	<field name="3rd Day Calls" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="3rd Day Calls"/>
+	</field>
+	<field name="4th Day Calls" class="java.lang.Long">
+		<property name="com.jaspersoft.studio.field.label" value="4th Day Calls"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch">
+			<textField>
+				<reportElement x="137" y="0" width="100" height="30" uuid="8cd0286a-b1b6-47ea-8d86-7cd85ec852f4"/>
+				<textFieldExpression><![CDATA[$F{2nd Day Calls}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

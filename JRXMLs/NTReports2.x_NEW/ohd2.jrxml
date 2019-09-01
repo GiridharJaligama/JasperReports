@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 7.1.0.final using JasperReports Library version 6.4.3  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ohd2" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="381ca5bf-8ee4-40b7-9449-b9fa05667a3f">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="TESTING"/>
+	<parameter name="OhdIncidentStatus" class="java.util.List"/>
+	<queryString language="SQL">
+		<![CDATA[select
+      ohd.found_station_ID,
+      s1.stationcode as fscode,
+      ohd.holding_station_ID,
+      s2.stationcode as hscode,
+      ohd.OHD_ID,
+      ohd.founddate,
+      st1.status_ID as stdesc,
+      st1.description as status ,  
+      st2.status_ID as bdesc,
+      st2.description as baggagestatus,
+      GROUP_CONCAT(DISTINCT (CONCAT_WS(' ',p.firstname,p.lastname ))) FIRSTNAME,
+      GROUP_CONCAT(DISTINCT (CONCAT_WS(' ' ,it.legfrom,IT.FLIGHTNUM))) LEGFROM,
+      SUBSTRING_INDEX(GROUP_CONCAT(CAST(it.legto AS CHAR) ORDER BY (IT.ORDER_ID) DESC), ',', 1) AS  LEGTO,
+      s3.stationcode as faultstationcode,
+      cic.loss_code,
+      ohd.color,
+      ohd.type,
+      ohd.claimnum as  "Bag Tag Number",
+      st3.description as "Bag Disposition"
+from station s1,station s2,status st1,agent,ohd
+     left outer join ohd_passenger p on p.OHD_ID = ohd.ID
+	 left outer join ohd_itinerary it on it.OHD_ID = ohd.ID
+     left outer join station s3 on s3.station_ID = ohd.faultStation_ID
+     left outer join company_irregularity_codes cic on cic.code_id = ohd.loss_code
+     left outer join status st2 on st2.status_ID=ohd.status_id
+     left outer join status st3 on st3.status_ID=ohd.disposal_status_id
+where
+     s1.station_ID = ohd.found_station_ID and
+     s2.station_ID = ohd.holding_station_ID and
+     st1.status_ID = ohd.status_ID and
+     agent.Agent_ID = ohd.agent_ID
+
+and $X{IN, ohd.status_ID,OhdIncidentStatus}
+    
+group by ohd.found_station_ID,
+      s1.stationcode ,
+      holding_station_ID,
+      s2.stationcode ,
+      ohd.OHD_ID,
+      date(ohd.founddate),
+      st1.status_ID ,
+      st1.description ,  
+      st2.status_ID ,
+      st2.description,
+      s3.stationcode,
+      cic.loss_code,
+      ohd.color,
+      ohd.type,
+      ohd.claimnum]]>
+	</queryString>
+	<field name="found_station_ID" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="found_station_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ohd"/>
+	</field>
+	<field name="fscode" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="fscode"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="holding_station_ID" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="holding_station_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ohd"/>
+	</field>
+	<field name="hscode" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="hscode"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="OHD_ID" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="OHD_ID"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ohd"/>
+	</field>
+	<field name="founddate" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="founddate"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ohd"/>
+	</field>
+	<field name="stdesc" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="stdesc"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="status"/>
+	</field>
+	<field name="status" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="status"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="status"/>
+	</field>
+	<field name="bdesc" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="bdesc"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="status"/>
+	</field>
+	<field name="baggagestatus" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="baggagestatus"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="status"/>
+	</field>
+	<field name="FIRSTNAME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="FIRSTNAME"/>
+	</field>
+	<field name="LEGFROM" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="LEGFROM"/>
+	</field>
+	<field name="LEGTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="LEGTO"/>
+	</field>
+	<field name="faultstationcode" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="faultstationcode"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="station"/>
+	</field>
+	<field name="loss_code" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="loss_code"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="company_irregularity_codes"/>
+	</field>
+	<field name="color" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="color"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ohd"/>
+	</field>
+	<field name="type" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="type"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ohd"/>
+	</field>
+	<field name="Bag Tag Number" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Bag Tag Number"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ohd"/>
+	</field>
+	<field name="Bag Disposition" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="Bag Disposition"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="status"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="220" y="0" width="100" height="30" uuid="15c73b5d-ac60-4061-a6ac-12960953c5b0">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="68f7c913-0ab8-48c8-ae44-34054c8fb556"/>
+				</reportElement>
+				<text><![CDATA[OHD_ID]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="411" y="0" width="100" height="30" uuid="da4b2d8c-b0e6-48fc-ae06-32c986c427fe">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="761f5593-4f7f-415a-8c0d-3a57bd389df6"/>
+				</reportElement>
+				<text><![CDATA[fscode]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="379" y="0" width="100" height="30" uuid="93487600-09e4-4b2a-9dfb-60673ba1be60">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c6d4f6f2-3bc6-4747-9017-93bf956df146"/>
+				</reportElement>
+				<text><![CDATA[status]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="131" splitType="Stretch">
+			<textField>
+				<reportElement x="220" y="64" width="100" height="30" uuid="acb0c16b-431e-44a7-893f-eed0ced7d703">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="68f7c913-0ab8-48c8-ae44-34054c8fb556"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{OHD_ID}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="411" y="68" width="100" height="30" uuid="18baab96-e8ba-4210-8578-b8ad1e924ff2">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="761f5593-4f7f-415a-8c0d-3a57bd389df6"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{fscode}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="379" y="101" width="100" height="30" uuid="91b992f1-e7d3-430c-b5d9-e685f809568f">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="c6d4f6f2-3bc6-4747-9017-93bf956df146"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{status}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
